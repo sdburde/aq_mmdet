@@ -1,0 +1,45 @@
+# version: '3.8'
+
+# services:
+#   mmdetection-jupyter:
+#     image: mmdetection-jupyter  # Use the image you built
+#     container_name: mmdetection-jupyter
+#     ports:
+#       - "8888:8888"
+#     volumes:
+#       - ./data:/mmdetection/data 
+#       - ./notebooks:/mmdetection/notebooks  
+#     environment:
+#       - PYTORCH=1.9.0
+#       - CUDA=11.1
+#       - CUDNN=8
+#     command: ["jupyter", "notebook", "--ip=0.0.0.0", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
+
+
+version: '3.8'
+
+services:
+  mmdetection-jupyter:
+    image: mmdetection-jupyter:0.2 # Use the image you built
+    container_name: mmdetection-jupyter-02
+    shm_size: '8gb'
+    ports:
+      - "8888:8888"  # Jupyter Notebook
+      - "6007:6006"  # TensorBoard, host 6007 -> container 6006
+    volumes:
+      - ./Aquarium_mmdetection.ipynb:/mmdetection/Aquarium_mmdetection.ipynb
+      - ./Aquarium_mmdetection2.ipynb:/mmdetection/Aquarium_mmdetection2.ipynb
+      - ./mmdetection.ipynb:/mmdetection/mmdetection.ipynb
+      - ./mmdet_dir/checkpoints:/mmdetection/checkpoints
+      - ./mmdet_dir/output:/mmdetection/output
+      - ./mmdet_dir/data:/mmdetection/data
+      - ./mmdet_dir/work_dirs:/mmdetection/work_dirs
+      - ./mmdet_dir/configs:/mmdetection/configs
+      - ./mmdet_dir/tools:/mmdetection/tools
+    environment:
+      - PYTORCH=1.9.0
+      - CUDA=11.1
+      - CUDNN=8
+    command: >
+      bash -c "jupyter notebook --port=8888 --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='' &
+               tensorboard --logdir ./mmdetection/work_dirs --host=0.0.0.0 --port=6007"
