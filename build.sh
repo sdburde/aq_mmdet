@@ -1,0 +1,1 @@
+docker build -t mmdetection-jupyter:0.2 .
